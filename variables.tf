@@ -18,5 +18,10 @@ variable "facility" {
 
 variable "device_type" {
   description = "Type of device to provision"
-  default     = "c3.small.x86"
+  default     = "c2.medium.x86"
+}
+
+variable "workers" {
+  description = "Number of workers to provision"
+  default     = "1"
 }

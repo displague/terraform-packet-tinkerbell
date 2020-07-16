@@ -209,6 +209,8 @@ setup_network_forwarding() (
 )
 
 setup_networking_netplan() (
+	apt install -y netplan.io
+
 	jq -n \
 		--arg interface "$TINKERBELL_NETWORK_INTERFACE" \
 		--arg cidr "$TINKERBELL_CIDR" \
@@ -618,6 +620,8 @@ do_setup() (
 
 	if [ ! -f ./envrc -o -z ./envrc ]; then
 		generate_envrc enp1s0f1 >envrc
+		# might be enp5s0f1 or others.
+		# TODO(displague) create a list of known packet dual/quad port hybrid seconday interfaces (if possible) and choose whichever of those is found first.
 	fi
 
 	# shellcheck disable=SC1091

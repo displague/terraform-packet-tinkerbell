@@ -29,7 +29,9 @@ resource "packet_device" "tink-provisioner" {
 
 # Create a device and add it to tf_project_1
 resource "packet_device" "tink-worker" {
-  hostname         = "tink-worker"
+  count = var.workers
+
+  hostname         = "tink-worker-${count.index}"
   plan             = var.device_type
   facilities       = [var.facility]
   operating_system = "custom_ipxe"
@@ -49,7 +51,8 @@ resource "packet_port_vlan_attachment" "provisioner" {
 
 # Attach VLAN to worker
 resource "packet_port_vlan_attachment" "worker" {
-  device_id = packet_device.tink-worker.id
+  count     = var.workers
+  device_id = packet_device.tink-worker[count.index].id
   port_name = "eth0"
   vlan_vnid = packet_vlan.provisioning-vlan.vxlan
 }
@@ -59,9 +62,14 @@ output "provisioner_dns_name" {
 }
 
 output "provisioner_ip" {
-  value = "${packet_device.tink-provisioner.network[0].address}"
+  value = packet_device.tink-provisioner.network[0].address
 }
 
 output "worker_mac_addr" {
-  value = "${packet_device.tink-worker.ports[1].mac}"
+  // TODO(displague) get all of the mac addresses, for_each
+  value = <<EOT
+%{ for port in packet_device.tink-worker.*.ports ~}
+${port[1].mac}
+%{ endfor ~}
+EOT
 }
