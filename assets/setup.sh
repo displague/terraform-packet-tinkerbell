@@ -502,7 +502,7 @@ start_components() (
 
 setup_docker() (
 	# steps from https://docs.docker.com/engine/install/ubuntu/
-	sudo apt-get install -y \
+	sudo apt -qq install -y \
 		apt-transport-https \
 		ca-certificates \
 		curl \
@@ -519,8 +519,8 @@ setup_docker() (
 	)
 	sudo add-apt-repository "$repo"
 
-	sudo apt-get update
-	sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+	sudo apt -qq update
+	sudo apt -qq install -y docker-ce docker-ce-cli containerd.io
 )
 
 setup_docker_compose() (
@@ -604,7 +604,7 @@ whats_next() (
 
 do_setup() (
 	export DEBIAN_FRONTEND=noninteractive
-	apt-get update
+	apt -qq update
 
 	if ! command_exists docker; then
 		setup_docker
@@ -615,7 +615,7 @@ do_setup() (
 	fi
 
 	if ! command_exists jq; then
-		sudo apt-get install -y jq
+		sudo apt -qq install -y jq
 	fi
 
 	if [ ! -f ./envrc -o -z ./envrc ]; then
