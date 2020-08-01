@@ -8,11 +8,16 @@ Not safe for production or development.
 
 This project is a deviation away from https://tinkerbell.org/setup/, but the instructions given on that site are best once tinkerbell is running.  Notably, `setup.sh`, while based on the one in the `tinkerbell/tink` repo, has been tailored here for this project.
 
+Terraform provisioner resources are used, with the SSH Agent option.  To ensure that the provisioner succeeds, your local SSH keys should be registered with Packet: <https://www.packet.com/developers/docs/servers/key-features/ssh-keys/>.
+
+This SSH key should also be registered with your SSH Agent, using `ssh-add`.  In many environments SSH keys can be associated with your login or key-chain.  For example, `ssh-add -K` will register all SSH keys stored in your OSX Keychain with the SSH agent, making them available for use in SSH authentication.
+
 ```sh
-terraform init
+terraform init --upgrade
 terraform apply # this may take 20m
 ```
 
+<!--
 ## Copy files
 
 If terraform fails to provision deploy/ into the tink-provision node, you can rsync it there:
@@ -23,8 +28,11 @@ rsync assets/setup.sh root@$(terraform output provisioner_dns_name)/root/
 ```
 
 The `tink-provisioner` system should now have all of the scripts that you will need to continue the setup.
+-->
 
 ## Run setup.sh
+
+The `setup.sh` file and `deploy` directory can be should be copied over when the provisioner is created.
 
 ```sh
 ssh root@$(terraform output provisioner_dns_name)
